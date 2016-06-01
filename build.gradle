@@ -1,0 +1,25 @@
+def docker(List<String> arguments) {
+  exec {
+    executable "docker"
+    args arguments
+  }
+}
+
+def doDownload(String source, String target) {
+  def f = new File(target)
+  if(!f.exists()) {
+    new URL(source).withInputStream { is -> f.withOutputStream { os -> os << is } }
+  }
+}
+
+def doDocker() {
+  //docker(["build", "-t", "raphaelmeyer/arm-bcm2708", "arm-bcm2708"])
+}
+
+task image << {
+  def tools = 'arm-bcm2708/raspberrypi-tools.zip'
+  def url = 'https://github.com/raspberrypi/tools/archive/master.zip'
+  doDownload(url, tools)
+  doDocker()
+}
+

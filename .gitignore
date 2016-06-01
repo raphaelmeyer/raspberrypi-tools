@@ -1,2 +1,9 @@
 /_build/
+/.gradle/
+
+# vim
+*.swp
+
+# artifacts
+/arm-bcm2708/raspberrypi-tools.zip
 
