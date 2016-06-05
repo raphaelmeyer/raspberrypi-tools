@@ -1,25 +1,39 @@
-def docker(List<String> arguments) {
-  exec {
-    executable "docker"
-    args arguments
+class Download extends DefaultTask {
+  String url
+  String filename
+
+  @TaskAction
+  def download() {
+    def file = new File(filename)
+    if(!file.exists()) {
+      new URL(url).withInputStream { input -> file.withOutputStream { output -> output << input } }
+    }
   }
 }
 
-def doDownload(String source, String target) {
-  def f = new File(target)
-  if(!f.exists()) {
-    new URL(source).withInputStream { is -> f.withOutputStream { os -> os << is } }
+class Docker extends DefaultTask {
+  String location
+  String repository
+
+  @TaskAction
+  def createImage() {
+
+    // docker images --format "{{.Repository}}:{{.Tag}}" | grep repository:latest
+
+    project.exec {
+      executable 'docker'
+      args ['build', '-t', repository, location]
+    }
   }
 }
 
-def doDocker() {
-  //docker(["build", "-t", "raphaelmeyer/arm-bcm2708", "arm-bcm2708"])
+task downloadTools(type: Download) {
+  url = 'https://github.com/raspberrypi/tools/archive/master.zip'
+  filename = 'arm-bcm2708/raspberrypi-tools.zip'
 }
 
-task image << {
-  def tools = 'arm-bcm2708/raspberrypi-tools.zip'
-  def url = 'https://github.com/raspberrypi/tools/archive/master.zip'
-  doDownload(url, tools)
-  doDocker()
+task image(type: Docker, dependsOn: downloadTools) {
+  location = 'arm-bcma2708'
+  repository = 'raphaelmeyer/arm-bcm2708'
 }
 
