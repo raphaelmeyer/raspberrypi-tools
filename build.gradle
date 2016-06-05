@@ -17,12 +17,10 @@ class Docker extends DefaultTask {
 
   @TaskAction
   def createImage() {
-
     // docker images --format "{{.Repository}}:{{.Tag}}" | grep repository:latest
-
     project.exec {
-      executable 'docker'
-      args ['build', '-t', repository, location]
+      executable = 'docker'
+      args = ['build', '-t', repository, location]
     }
   }
 }
@@ -33,7 +31,7 @@ task downloadTools(type: Download) {
 }
 
 task image(type: Docker, dependsOn: downloadTools) {
-  location = 'arm-bcma2708'
+  location = 'arm-bcm2708'
   repository = 'raphaelmeyer/arm-bcm2708'
 }
 
