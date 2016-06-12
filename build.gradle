@@ -35,3 +35,8 @@ task image(type: Docker, dependsOn: downloadTools) {
   repository = 'raphaelmeyer/arm-bcm2708'
 }
 
+task rootfs(type: Docker) {
+  location = 'rootfs'
+  repository = 'raphaelmeyer/rootfs'
+}
+
